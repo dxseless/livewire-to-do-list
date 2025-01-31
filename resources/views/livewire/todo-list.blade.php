@@ -1,7 +1,6 @@
 <div class="todo-list">
     <h1>To-Do List</h1>
 
-    <!-- Форма для добавления новой категории -->
     <div class="category-form">
         <input
             type="text"
@@ -12,7 +11,6 @@
         <button wire:click="addCategory" class="add-button">Добавить категорию</button>
     </div>
 
-    <!-- Список категорий -->
     <div class="categories">
         <button wire:click="setCategory(null)" class="{{ $selectedCategory === null ? 'active' : '' }}">Все категории</button>
         @foreach($categories as $category)
@@ -22,7 +20,6 @@
         @endforeach
     </div>
 
-    <!-- Форма для добавления новой задачи -->
     <form wire:submit.prevent="addTask" class="add-task-form">
         <input
             type="text"
@@ -39,7 +36,6 @@
         <button type="submit" class="add-button">Добавить</button>
     </form>
 
-    <!-- Поле для поиска задач и кнопка -->
     <div class="search-form">
         <input
             type="text"
@@ -50,19 +46,16 @@
         <button wire:click="searchTasks" class="search-button">Найти</button>
     </div>
 
-    <!-- Фильтры -->
     <div class="filters">
         <button wire:click="setFilter('all')" class="{{ $filter === 'all' ? 'active' : '' }}">Все</button>
         <button wire:click="setFilter('active')" class="{{ $filter === 'active' ? 'active' : '' }}">Активные</button>
         <button wire:click="setFilter('completed')" class="{{ $filter === 'completed' ? 'active' : '' }}">Завершенные</button>
     </div>
 
-    <!-- Список задач -->
     <ul class="task-list">
         @foreach($tasks as $task)
             <li class="task-item {{ $task->completed ? 'completed' : '' }}">
                 @if($editingTaskId === $task->id)
-                    <!-- Форма редактирования задачи -->
                     <form wire:submit.prevent="updateTask" class="edit-form">
                         <input
                             type="text"
@@ -73,7 +66,6 @@
                         <button type="button" wire:click="cancelEditing" class="cancel-button">Отмена</button>
                     </form>
                 @else
-                    <!-- Отображение задачи -->
                     <input
                         type="checkbox"
                         wire:change="toggleTask({{ $task->id }})"
@@ -93,7 +85,6 @@
         @endforeach
     </ul>
 
-    <!-- Количество оставшихся задач -->
     <div class="remaining-tasks">
         Осталось задач: {{ $remainingTasksCount }}
     </div>
