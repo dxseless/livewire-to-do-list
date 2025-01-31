@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Task;
+use App\Models\Category;
 
 class TodoList extends Component
 {
@@ -13,15 +14,20 @@ class TodoList extends Component
     public $editingTaskId = null;
     public $editingTaskDescription = '';
     public $searchQuery = '';
+    public $categories;
+    public $selectedCategory = null;
+    public $newCategory = '';
 
     protected $rules = [
         'newTask' => 'required|min:3',
         'editingTaskDescription' => 'required|min:3',
+        'newCategory' => 'required|min:3',
     ];
 
     public function mount()
     {
         $this->loadTasks();
+        $this->loadCategories();
     }
 
     public function loadTasks()
@@ -38,24 +44,49 @@ class TodoList extends Component
             $query->where('description', 'like', '%' . $this->searchQuery . '%');
         }
 
+        if ($this->selectedCategory) {
+            $query->whereHas('categories', function ($q) {
+                $q->where('categories.id', $this->selectedCategory);
+            });
+        }
+
         $this->tasks = $query->get();
     }
 
-    public function searchTasks()
+    public function loadCategories()
     {
-        $this->loadTasks();
+        $this->categories = Category::all();
     }
 
     public function addTask()
     {
         $this->validate(['newTask' => 'required|min:3']);
 
-        Task::create([
+        $task = Task::create([
             'description' => $this->newTask,
             'completed' => false,
         ]);
 
+        if ($this->selectedCategory) {
+            $task->categories()->attach($this->selectedCategory);
+        }
+
         $this->newTask = '';
+        $this->loadTasks();
+    }
+
+    public function addCategory()
+    {
+        $this->validate(['newCategory' => 'required|min:3']);
+
+        Category::create(['name' => $this->newCategory]);
+        $this->newCategory = '';
+        $this->loadCategories();
+    }
+
+    public function setCategory($categoryId)
+    {
+        $this->selectedCategory = $categoryId;
         $this->loadTasks();
     }
 
@@ -97,6 +128,11 @@ class TodoList extends Component
     {
         $this->editingTaskId = null;
         $this->editingTaskDescription = '';
+    }
+
+    public function searchTasks()
+    {
+        $this->loadTasks();
     }
 
     public function setFilter($filter)
