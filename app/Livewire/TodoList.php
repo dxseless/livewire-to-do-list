@@ -12,6 +12,7 @@ class TodoList extends Component
     public $filter = 'all';
     public $editingTaskId = null;
     public $editingTaskDescription = '';
+    public $searchQuery = '';
 
     protected $rules = [
         'newTask' => 'required|min:3',
@@ -25,13 +26,24 @@ class TodoList extends Component
 
     public function loadTasks()
     {
+        $query = Task::query();
+
         if ($this->filter === 'active') {
-            $this->tasks = Task::where('completed', false)->get();
+            $query->where('completed', false);
         } elseif ($this->filter === 'completed') {
-            $this->tasks = Task::where('completed', true)->get();
-        } else {
-            $this->tasks = Task::all();
+            $query->where('completed', true);
         }
+
+        if ($this->searchQuery) {
+            $query->where('description', 'like', '%' . $this->searchQuery . '%');
+        }
+
+        $this->tasks = $query->get();
+    }
+
+    public function searchTasks()
+    {
+        $this->loadTasks();
     }
 
     public function addTask()

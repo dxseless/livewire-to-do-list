@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        @livewire('todo-list')
+        @livewire('todo-list') 
     </div>
 
     @livewireScripts

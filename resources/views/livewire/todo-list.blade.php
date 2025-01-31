@@ -1,7 +1,6 @@
 <div class="todo-list">
     <h1>To-Do List</h1>
 
-    <!-- Форма для добавления новой задачи -->
     <form wire:submit.prevent="addTask" class="add-task-form">
         <input
             type="text"
@@ -12,14 +11,22 @@
         <button type="submit" class="add-button">Добавить</button>
     </form>
 
-    <!-- Фильтры -->
+    <div class="search-form">
+        <input
+            type="text"
+            wire:model="searchQuery"
+            placeholder="Поиск задач..."
+            class="task-input search-input"
+        >
+        <button wire:click="searchTasks" class="search-button">Найти</button>
+    </div>
+
     <div class="filters">
         <button wire:click="setFilter('all')" class="{{ $filter === 'all' ? 'active' : '' }}">Все</button>
         <button wire:click="setFilter('active')" class="{{ $filter === 'active' ? 'active' : '' }}">Активные</button>
         <button wire:click="setFilter('completed')" class="{{ $filter === 'completed' ? 'active' : '' }}">Завершенные</button>
     </div>
 
-    <!-- Список задач -->
     <ul class="task-list">
         @foreach($tasks as $task)
             <li class="task-item {{ $task->completed ? 'completed' : '' }}">
